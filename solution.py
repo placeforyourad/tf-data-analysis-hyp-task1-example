@@ -9,9 +9,15 @@ def solution(x_success: int,
              x_cnt: int, 
              y_success: int, 
              y_cnt: int) -> bool:
-    diff = x_success / x_cnt - y_success / y_cnt
-    std_dev = (x_success / x_cnt * (1 - x_success / x_cnt) / x_cnt + y_success / y_cnt * (1 - y_success / y_cnt) / y_cnt)**0.5
-    z_score = diff / std_dev
-    p_value = stats.norm.cdf(z_score)
     
-    return p_value < 0.05
+    x_rate = x_success / x_cnt
+    y_rate = y_success / y_cnt
+    
+    x_se = np.sqrt(x_rate * (1 - x_rate) / x_cnt)
+    y_se = np.sqrt(y_rate * (1 - y_rate) / y_cnt)
+    
+    z = (x_rate - y_rate) / np.sqrt(x_se**2 + y_se**2)
+    
+    critical_value = 2.576
+    
+    return z > critical_value
